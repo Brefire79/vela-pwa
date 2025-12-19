@@ -39,8 +39,36 @@ def _generate_icon(size: int):
             font = ImageFont.truetype("DejaVuSans.ttf", int(size * 0.6))
         except Exception:
             font = ImageFont.load_default()
-    tw, th = draw.textsize(text, font=font)
+    bbox = draw.textbbox((0, 0), text, font=font)
+    tw = bbox[2] - bbox[0]
+    th = bbox[3] - bbox[1]
     draw.text(((size - tw) / 2, (size - th) / 2), text, fill="#ffffff", font=font)
+    return img
+
+
+def _generate_maskable(size: int):
+    """Gera um ícone 'maskable' com margens (safe zone)."""
+    if Image is None:
+        return None
+    img = Image.new("RGBA", (size, size), "#0d9488")
+    draw = ImageDraw.Draw(img)
+    text = "V"
+    try:
+        font = ImageFont.truetype("arial.ttf", int(size * 0.5))
+    except Exception:
+        try:
+            font = ImageFont.truetype("DejaVuSans.ttf", int(size * 0.5))
+        except Exception:
+            font = ImageFont.load_default()
+    bbox = draw.textbbox((0, 0), text, font=font)
+    tw = bbox[2] - bbox[0]
+    th = bbox[3] - bbox[1]
+    margin = int(size * 0.12)
+    cx = size // 2
+    cy = size // 2
+    draw.text((cx - tw // 2, cy - th // 2), text, fill="#ffffff", font=font)
+    # opcional: círculo interno indicando zona segura
+    # draw.ellipse((margin, margin, size - margin, size - margin), outline="#ffffff")
     return img
 
 
@@ -54,6 +82,28 @@ def icon(size: int):
     img.save(buf, format="PNG")
     buf.seek(0)
     return send_file(buf, mimetype="image/png")
+
+
+@app.route("/icons/maskable/<int:size>.png")
+def icon_maskable(size: int):
+    img = _generate_maskable(size)
+    if img is None:
+        return ("Pillow não instalado", 404)
+    buf = BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+    return send_file(buf, mimetype="image/png")
+
+
+@app.route("/favicon.ico")
+def favicon():
+    base = _generate_icon(64)
+    if base is None:
+        return ("Pillow não instalado", 404)
+    buf = BytesIO()
+    base.save(buf, format="ICO")
+    buf.seek(0)
+    return send_file(buf, mimetype="image/x-icon")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
