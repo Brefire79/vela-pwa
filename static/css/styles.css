@@ -96,9 +96,18 @@ button[data-action="equal"] {
 	border-color: color-mix(in oklab, var(--accent), black 50%);
 	color: #07333a;
 	font-weight: 600;
+	grid-column: span 2;
 }
 button[data-action="equal"]:hover { filter: brightness(1.06); }
 
 @media (min-width: 480px) {
 	.calc { width: 380px; }
 }
+
+/* Animação sutil ao atualizar o display */
+@keyframes displayPulse {
+	0% { transform: scale(1.00); box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent), white 20%); }
+	50% { transform: scale(1.015); box-shadow: 0 0 0 6px transparent; }
+	100% { transform: scale(1.00); box-shadow: none; }
+}
+.display.flash { animation: displayPulse 180ms ease; }

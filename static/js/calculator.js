@@ -5,7 +5,13 @@
   let operator = null;
   let operand = null;
 
-  const setDisplay = (val) => { display.value = String(val); };
+  const setDisplay = (val) => {
+    display.value = String(val);
+    // trigger subtle animation
+    display.classList.remove('flash');
+    void display.offsetWidth; // reflow to restart animation
+    display.classList.add('flash');
+  };
   const clear = () => { buffer = ''; operator = null; operand = null; setDisplay(0); };
   const back = () => { buffer = buffer.slice(0, -1); setDisplay(buffer || 0); };
 
