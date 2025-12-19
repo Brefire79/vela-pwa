@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vela PWA - Calculadora Offline</title>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0d9488" />
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>Calculadora Offline</h1>
+      <p>Funciona mesmo sem internet</p>
+    </header>
+
+    <main class="app-main">
+      <div class="calc">
+        <input id="display" class="display" type="text" placeholder="0" readonly />
+        <div class="keys">
+          <button data-action="clear">C</button>
+          <button data-action="divide">÷</button>
+          <button data-action="multiply">×</button>
+          <button data-action="back">⌫</button>
+
+          <button>7</button>
+          <button>8</button>
+          <button>9</button>
+          <button data-action="subtract">−</button>
+
+          <button>4</button>
+          <button>5</button>
+          <button>6</button>
+          <button data-action="add">+</button>
+
+          <button>1</button>
+          <button>2</button>
+          <button>3</button>
+          <button data-action="equal">=</button>
+
+          <button class="zero">0</button>
+          <button>.</button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <small>PWA demo · Vela</small>
+    </footer>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js').catch(console.error);
+        });
+      }
+    </script>
+    <script src="/static/js/calculator.js"></script>
+  </body>
+</html>
